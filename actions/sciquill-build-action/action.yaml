@@ -1,0 +1,53 @@
+# action.yml
+name: "Run a bulker command"
+description: "Bulker, yay."
+
+# env:
+#   BULKERCFG: "bulker/bulker_config.yaml"
+#   TEXINPUTS: "sciquill/tex_templates/:"
+  
+inputs:
+  command:
+    description: "Command to run"
+    required: false
+    default: "make manu"
+  mbdir:
+    default: "/home/runner/work/sciquill/sciquill/sciquill"
+    required: false
+  bulker_config:
+    description: "Path to bulker configuration file"
+    default: "bulker/bulker_config.yaml"
+    required: true
+  outputs:
+    description: "What files will this action produce that should be tracked in git?"
+    required: false
+    default: "build/*"
+runs:
+  using: 'composite'
+  steps:
+    - run: pip3 install setuptools wheel
+      shell: bash
+    - run: pip3 install pandocfilters
+      shell: bash      
+    - run: pip3 install https://github.com/databio/bulker/archive/dev.zip 
+      shell: bash
+    - run: /home/runner/.local/bin/bulker load -c ${{ inputs.bulker_config }} -r databio/sciquill -f bulker/sciquill_bulker_manifest.yaml
+      shell: bash
+    - run: |
+        mkdir -p output
+        pwd
+        ls -l
+        export TEXINPUTS="$TEXINPUTS:sciquill/tex_templates/:"
+        echo $TEXINPUTS
+        export MBDIR=${{ inputs.mbdir }}
+        ls -l $MBDIR
+        /home/runner/.local/bin/bulker run -c ${{ inputs.bulker_config }} databio/sciquill ${{ inputs.command }}
+      shell: bash 
+      name: Run command with bulker
+    - name: Commit changes
+      shell: bash
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add ${{ inputs.outputs }}
+        git commit -m "Rebuild PDF" -a
