@@ -10,15 +10,18 @@
 echo "Build pdfs"
 currdir="`pwd`"
 outdir="$currdir/output"
-for svgfile in "$@"
+mkdir -p $1/digest
+figdir=$1
+mkdir -p $1/pdf
+for svgpath in `ls ${figdir}/*.svg`
 do
-  echo -n "Checking $svgfile..."
-  pdffile="${svgfile/svg/pdf}"
-  hashfile="${svgfile/svg/hash}"
-  mkdir -p `dirname $hashfile`
+  svgfile=`basename $svgpath`
+  echo -n "Checking $svgpath..."
+  pdffile="${figdir}/pdf/${svgfile/svg/pdf}"
+  hashfile="${figdir}/digest/${svgfile/svg/digest}"
   # srcdate=`stat -c %Y $svgfile`
   # destdate=`stat -c %Y $pdffile 2>/dev/null`
-  svghashnew=`md5sum $svgfile | cut -f1 -d' '`
+  svghashnew=`md5sum $svgpath | cut -f1 -d' '`
   # echo $svghashnew
   if [ -f $hashfile ];
   then
@@ -29,10 +32,9 @@ do
   if [ ! -f $pdffile ] || [ "${svghashnew}" != "${svghashold}" ];
   then
     echo "Changed. new: $svghashnew; old: $svghashold. Building $pdffile"
-    inkscape --export-pdf "$pdffile" "${currdir}/$svgfile"
+    inkscape --export-pdf "$pdffile" "${currdir}/$svgpath" 2> /dev/null
     echo $svghashnew > ${hashfile}
   else
-    echo "PDF exists: $pdffile"
     echo "Checksums match: $svghashnew" 
   fi
 done

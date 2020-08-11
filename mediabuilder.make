@@ -33,17 +33,21 @@ else
 bib = ${BIBTEXDB}
 endif
 
+test_texinputs:
+	@echo ${TEXINPUTS}
+
 
 mbtest:
 	@echo "mediabuilder makefile successfully imported."
 
+
 # Auto-build svg figures that have changed since last render
 figs:
-	@echo "Converting changed svg files to PDF..."
-	$(mbin)/buildfigpdfsgit fig/*.svg
+	@echo "Converting changed SVG files to PDF..."
+	$(mbin)/build-pdfs fig
 
 figs_png:
-	@echo "Converting changed svg files to PNG..."
+	@echo "Converting changed SVG files to PNG..."
 	$(mbin)/buildfigs fig/*.svg
 
 

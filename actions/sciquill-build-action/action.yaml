@@ -16,7 +16,7 @@ inputs:
     required: false
   bulker_config:
     description: "Path to bulker configuration file"
-    default: "bulker/bulker_config.yaml"
+    default: "sciquill/bulker/bulker_config.yaml"
     required: true
   outputs:
     description: "What files will this action produce that should be tracked in git?"
