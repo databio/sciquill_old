@@ -2,10 +2,6 @@
 name: "Run a bulker command"
 description: "Bulker, yay."
 
-# env:
-#   BULKERCFG: "bulker/bulker_config.yaml"
-#   TEXINPUTS: "sciquill/tex_templates/:"
-  
 inputs:
   command:
     description: "Command to run"
