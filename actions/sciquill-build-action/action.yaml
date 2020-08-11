@@ -10,14 +10,11 @@ inputs:
   command:
     description: "Command to run"
     required: false
-    default: "make manu"
+    default: "make manuscript"
   mbsubdir:
+    description: "To what subfolder did you clone the sciquill repository?"
     default: "sciquill"
     required: false
-  bulker_config:
-    description: "Path to bulker configuration file"
-    default: "sciquill/bulker/bulker_config.yaml"
-    required: true
   outputs:
     description: "What files will this action produce that should be tracked in git?"
     required: false
@@ -31,13 +28,13 @@ runs:
       shell: bash      
     - run: pip3 install https://github.com/databio/bulker/archive/dev.zip 
       shell: bash
-    - run: /home/runner/.local/bin/bulker load -c ${{ inputs.bulker_config }} -r databio/sciquill -f sciquill/bulker/sciquill_bulker_manifest.yaml
+    - run: /home/runner/.local/bin/bulker load -c ${{ inputs.mbsubdir }}/${{ inputs.bulker_config }} -r databio/sciquill -f ${{ inputs.mbsubdir }}/bulker/sciquill_bulker_manifest.yaml
       shell: bash
     - run: |
         mkdir -p output
         pwd
         ls -l
-        export TEXINPUTS="$TEXINPUTS:sciquill/tex_templates/:"
+        export TEXINPUTS="$TEXINPUTS:${{ inputs.mbsubdir }}/tex_templates/:"
         echo $TEXINPUTS
         export MBDIR=`pwd`/${{ inputs.mbsubdir }}
         ls -l $MBDIR
