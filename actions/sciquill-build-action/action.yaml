@@ -11,8 +11,8 @@ inputs:
     description: "Command to run"
     required: false
     default: "make manu"
-  mbdir:
-    default: "/home/runner/work/sciquill/sciquill/sciquill"
+  mbsubdir:
+    default: "sciquill"
     required: false
   bulker_config:
     description: "Path to bulker configuration file"
@@ -39,7 +39,7 @@ runs:
         ls -l
         export TEXINPUTS="$TEXINPUTS:sciquill/tex_templates/:"
         echo $TEXINPUTS
-        export MBDIR=${{ inputs.mbdir }}
+        export MBDIR=`pwd`/${{ inputs.mbsubdir }}
         ls -l $MBDIR
         /home/runner/.local/bin/bulker run -c ${{ inputs.bulker_config }} databio/sciquill ${{ inputs.command }}
       shell: bash 
