@@ -266,3 +266,20 @@ docker run --rm -it --volume=`pwd`:/repo --volume=$HOME/code/mediabuilder:/mbdir
 
 
 bulker load -c bulker/bulker_config.yaml databio/sciquill -f sciquill_bulker_manifest.yaml -r
+
+
+
+## Pandoc in containers
+
+in the past I just used  `pandoc --filter wrapfig`, but this way, the pandoc image has to have python available. It works better to use a pipe so that each program can run in its own container; so now: `	pandoc -t json | $(wrapfig) | pandoc -f json \` This works.
+
+
+
+
+
+
+
+
+
+
+
