@@ -24,7 +24,7 @@ runs:
       shell: bash      
     - run: pip3 install https://github.com/databio/bulker/archive/dev.zip 
       shell: bash
-    - run: /home/runner/.local/bin/bulker load -c ${{ inputs.mbsubdir }}/${{ inputs.bulker_config }} -r databio/sciquill -f ${{ inputs.mbsubdir }}/bulker/sciquill_bulker_manifest.yaml
+    - run: /home/runner/.local/bin/bulker load -c ${{ inputs.mbsubdir }}/bulker/bulker_config.yaml -r databio/sciquill -f ${{ inputs.mbsubdir }}/bulker/sciquill_bulker_manifest.yaml
       shell: bash
     - run: |
         mkdir -p output
@@ -34,7 +34,7 @@ runs:
         echo $TEXINPUTS
         export MBDIR=`pwd`/${{ inputs.mbsubdir }}
         ls -l $MBDIR
-        /home/runner/.local/bin/bulker run -c ${{ inputs.bulker_config }} databio/sciquill ${{ inputs.command }}
+        /home/runner/.local/bin/bulker run -c ${{ inputs.mbsubdir }}/bulker/bulker_config.yaml databio/sciquill ${{ inputs.command }}
       shell: bash 
       name: Run command with bulker
     - name: Commit changes

@@ -26,7 +26,7 @@ $endif$
 \usepackage{pdfpages}
 
 
-\usepackage[skip=2pt, font=small, format=plain, labelfont=it, textfont=it, tableposition=below]{caption}
+\usepackage[skip=2pt, font=footnotesize, format=plain, labelfont=it, textfont=it, tableposition=below]{caption}
 %  This code to use {caption} will wipe out the ability of pandoc-crossref
 %  to prepend the "Figure" reference to the caption.
 \DeclareCaptionLabelFormat{nolabel}{}
@@ -180,7 +180,7 @@ $endif$
 % Fancy abstract box styling ---------------------------------------------------
 
 \usepackage{mdframed}   % for framing
-\newmdenv[linecolor=white, fontcolor=bluetint, backgroundcolor=graybit, leftmargin=8, rightmargin=8, innertopmargin=8, innerbottommargin=8, innerleftmargin=12, innerrightmargin=12, roundcorner=10pt, font=\large]{infobox}
+\newmdenv[linecolor=white, fontcolor=bluetint, backgroundcolor=graybit, leftmargin=8, rightmargin=8, innertopmargin=8, innerbottommargin=8, innerleftmargin=12, innerrightmargin=12, roundcorner=10pt, font=\normalsize]{infobox}
 
 
 
@@ -189,11 +189,11 @@ $endif$
 \usepackage{xcolor}% http://ctan.org/pkg/xcolor
 
 \titleformat{\section}
-  {\normalfont\fontfamily{phv}\fontsize{12pt}{12pt}
+  {\normalfont\fontfamily{phv}\fontsize{11pt}{11pt}
     \selectfont\color{bluetint}\bfseries}{\thesection}{1em}{}
 
 \titleformat{\subsection}
-  {\normalfont\fontfamily{phv}\fontsize{10pt}{10pt}
+  {\normalfont\fontfamily{phv}\fontsize{9pt}{9pt}
     \selectfont\color{black}\bfseries}{\thesubsection}{1em}{}
 
 \titleformat{\subsubsection}
@@ -358,6 +358,10 @@ $else$
     $endif$
   \end{@twocolumnfalse}
 }]
+$endif$
+
+$if(bodyfont)$
+\$bodyfont$
 $endif$
 
 $body$
