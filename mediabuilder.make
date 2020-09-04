@@ -234,7 +234,9 @@ endif
 
 textemplate = $(mbdir)/tex_templates/manuscript.tex
 
-manuscript: figs
+manuscript: figs manuscript_nofig
+
+manuscript_nofig:
 	$(mbin)/passthru `$(mbin)/ver src/*$(manuscript_token)` | \
 	pandoc -t json | $(wrapfig) | pandoc -f json \
 	-o output/$(manuscript_token).pdf $(PANDOC_FLAGS)

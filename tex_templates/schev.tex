@@ -1,5 +1,9 @@
-\renewcommand{\rmdefault}{bch} % Charter
-\renewcommand{\sfdefault}{bch} % Charter
+% \renewcommand{\rmdefault}{bch} % Charter
+% \renewcommand{\sfdefault}{bch} % Charter
+
+\renewcommand{\rmdefault}{ptm} % Times
+\renewcommand{\sfdefault}{ptm} % Times
+
 
  \let\tightlist\relax
 
@@ -8,11 +12,8 @@
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
   
-\documentclass[11pt]{article}
-\RequirePackage[top=0.75in,left=0.75in,right=0.75in,bottom=0.75in]{geometry}
-
-% Include a series of generic definitions and usepackage commands
-\input{mediabuilder.tex}
+\documentclass[12pt]{article}
+\RequirePackage[top=1in,left=1in,right=1in,bottom=1in]{geometry}
 
 
 \usepackage{pdfpages}
@@ -165,20 +166,34 @@ $endif$
 \linespread{1.0}
 
 \titleformat{\section}
-  {\normalfont\fontsize{13pt}{13pt}\selectfont\color{black}\bfseries}{\thesection}{1em}{}
+  {\normalfont\fontsize{16pt}{16pt}\selectfont\color{black}\bfseries}{\thesection}{1em}{}
 
 \titleformat{\subsection}
-  {\normalfont\fontsize{12pt}{12pt}\selectfont\color{black}\bfseries}{\thesubsection}{1em}{}
+  {\normalfont\fontsize{14pt}{14pt}\selectfont\color{black}\bfseries}{\thesubsection}{1em}{}
 
 \titleformat{\subsubsection}
-  {\normalfont\fontsize{11pt}{11pt}\selectfont\color{black}\itshape}{\thesubsubsection}{1em}{}
+  {\normalfont\fontsize{14pt}{14pt}\selectfont\color{black}\itshape}{\thesubsubsection}{1em}{}
+
+\definecolor{lightblack}{RGB}{75,75,75}
+% use amsthm for addpunct, to add periods to the end of non-punctuated
+% paragraph titles (header level 4; ####)
+\usepackage{amsthm}
+\makeatletter
+\newcommand{\addperiod}[1]{#1\@addpunct{.}}
+\makeatother
+% use runin to specify no newline
+\titleformat{\paragraph}[runin]
+  {\normalfont\color{lightblack}\itshape}{\theparagraph}{}{\addperiod}
+
+
 
 
 % \titlespacing{command}{left spacing}{before spacing}{after spacing}[right]
-\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{-1pt plus 2pt minus 2pt}
-\titlespacing\subsection{0pt}{11pt plus 4pt minus 2pt}{-1pt plus 2pt minus 2pt}
-\titlespacing\subsubsection{0pt}{0pt plus 4pt minus 2pt}{-2pt plus 2pt minus 2pt}
+\titlespacing\section{0pt}{16pt plus 4pt minus 2pt}{-1pt plus 2pt minus 2pt}
+\titlespacing\subsection{0pt}{14pt plus 4pt minus 2pt}{-1pt plus 2pt minus 2pt}
+\titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{-2pt plus 2pt minus 2pt}
 
+\titlespacing{\paragraph}{0pt}{1pt plus 4pt minus 2pt}{6pt plus 2pt minus 2pt}
 
 %\subsectionfont{\color{maroonhaze}}
 %\subsubsectionfont{\color{orangehaze}}
