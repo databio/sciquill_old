@@ -51,9 +51,6 @@ $highlighting-macros$
 $endif$
 
 
-% for including csv files, maybe?
-\usepackage{csvsimple}
-
 % Start column longtable hack
 % Allows tables to be used in two-column documents with pandoc
 % Credit: https://tex.stackexchange.com/a/224096/161489
@@ -225,17 +222,17 @@ $endif$
 % The maximum part of the top or bottom of a text page that can be
 % occupied by floats. This is set so that at least four lines of text 
 % fit on the page.
-\renewcommand\topfraction{.9}
-\renewcommand\bottomfraction{.9}
-% The minimum amount of a text page that must be occupied by text.
-% This should accomodate four lines of text.
-\renewcommand\textfraction{.06}
-% The minimum amount of a float page that must be occupied by floats.
-\renewcommand\floatpagefraction{.94}
+% \renewcommand\topfraction{.9}
+% \renewcommand\bottomfraction{.9}
+% % The minimum amount of a text page that must be occupied by text.
+% % This should accomodate four lines of text.
+% \renewcommand\textfraction{.06}
+% % The minimum amount of a float page that must be occupied by floats.
+% \renewcommand\floatpagefraction{.94}
 
-% The same parameters repeated for double column output
-\renewcommand\dbltopfraction{.9}
-\renewcommand\dblfloatpagefraction{.9}
+% % The same parameters repeated for double column output
+% \renewcommand\dbltopfraction{.9}
+% \renewcommand\dblfloatpagefraction{.9}
 
 % Attempt to smash lists together
 
@@ -338,6 +335,23 @@ $endif$
 \begin{document}
 
 $if(onecol)$
+    $if(title)$
+    \maketitle
+    $endif$
+
+    $if(abstract)$
+    \begin{infobox}
+    $abstract$
+    \end{infobox}
+    $endif$
+
+    $for(include-before)$
+    $include-before$
+
+    $endfor$
+    $if(toc)$
+    \tableofcontents
+    $endif$
 $else$
 \twocolumn[{%
   \begin{@twocolumnfalse}

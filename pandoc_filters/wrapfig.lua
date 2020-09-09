@@ -26,7 +26,7 @@ if FORMAT:match 'latex' then
     -- print(dump(elem.caption))
     -- print(pandoc.utils.stringify(elem.caption))
     if elem.attributes.wrap then
-      local latex_begin=[[\setlength{\intextsep}{2pt}\setlength{\columnsep}{8pt}\begin{wrapfigure}{R}{]] .. elem.attributes.wrap .. 'in}'
+      local latex_begin=[[\setlength{\intextsep}{2pt}\setlength{\columnsep}{8pt}\begin{wrapfigure}{R}{]] .. elem.attributes.wrap .. '}'
       local latex_fig = [[\centering\includegraphics{]] .. elem.src .. [[}\caption{]]
       local latex_end = [[}\vspace{-5pt}\end{wrapfigure}]]
       print(dump(pandoc.RawInline('latex', latex_begin)))

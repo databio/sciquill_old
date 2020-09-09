@@ -17,6 +17,7 @@ csl = $(mbdir)/csl/nature.csl
 
 # Directory with pandoc-wrapfig
 wrapfig = $(mbdir)/pandoc-wrapfig/pandoc-wrapfig.py
+wrapfig_lua = $(mbdir)/pandoc_filters/wrapfig.lua
 
 # These are the typical flags we want to pass to pandoc
 # 08/2020 removed wrapfig to use pipe version
