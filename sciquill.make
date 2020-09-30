@@ -38,13 +38,19 @@ endif
 .DEFAULT_GOAL := default
 
 # sq settings
-sq:
+sq: 	
 	@echo "Sciquill version: " $(sqver)
 	@echo "TEXINPUTS: " ${TEXINPUTS}
 	@echo "SQDIR: " ${SQDIR}
 	@echo "sqtype: " $(sqtype)
+	@echo "bib: " $(bib)
+	@echo "csl: " $(csl)
+	@echo "figczar: " $(figczar)
+	@echo "lettertemplate: " $(lettertemplate)
+	@echo "textemplate: " $(textemplate)
 
-# These targest confirm that a variable is set, and points to a file that exists.
+
+# These target confirm that a variable is set, and points to a file that exists.
 
 define check-sq-variable
 	@test -n "$(2)" || { echo "$(1) variable not set!"; exit 1; }
@@ -212,17 +218,6 @@ research_plan_refs: figs research_plan refs
 	output/aims_research_plan.pdf \
 	output/references.pdf
 
-# Produce a subset bibliography for the project
-bibsub:
-	mkdir -p bibgen
-	$(sqbin)/nobib `$(sqbin)/ver src/specific_aims` \
-	`$(sqbin)/ver src/significance_innovation` \
-	`$(sqbin)/ver src/aim1` `$(sqbin)/ver src/aim2` `$(sqbin)/ver src/aim3` | \
-	pandoc -o bibgen/research_plan.tex $(PANDOC_FLAGS) --biblatex
-	pdflatex --output-directory=bibgen bibgen/research_plan.tex
-	jabref -n -a bibgen/research_plan.aux,bibgen/`hostname`.bib ${BIBTEXDB}
-	cat bibgen/*.bib > output/refs.bib
-
 cover_letter:
 	@echo "Letter template '$(lettertemplate)'"
 	pandoc -o output/cover_letter.pdf $(PANDOC_FLAGS) \
@@ -269,8 +264,23 @@ ifndef supplement_token
   supplement_token = supplement
 endif
 
+ifndef response_token
+  response_token = response
+endif
+
 default: manuscript
 	@echo Default
+
+cover_letter: sq-check-lettertemplate
+	@echo "Letter template '$(lettertemplate)'"
+	pandoc -o output/cover_letter.pdf $(PANDOC_FLAGS) \
+	--template $(lettertemplate) \
+	src/cover_letter.md
+
+cover_manu: cover_letter
+	$(sqbin)/mergepdf output/$(cover_token)_$(manuscript_token)_$(supplement_token).pdf \
+	output/$(cover_token).pdf \
+	output/$(manuscript_token).pdf
 
 manuscript: sq-check-core figs manuscript_nofig
 
@@ -279,17 +289,18 @@ manuscript_nofig:
 	pandoc $(PANDOC_FLAGS) \
 	-o output/$(manuscript_token).pdf
 
-cover_manu: cover_letter
-	$(sqbin)/mergepdf output/$(cover_token)_$(manuscript_token)_$(supplement_token).pdf \
-	output/$(cover_token).pdf \
-	output/$(manuscript_token).pdf
+response:
+	$(sqbin)/nobib `$(sqbin)/ver src/*$(response_token)` | \
+	pandoc -o output/$(response_token).pdf $(PANDOC_FLAGS) \
+	--template $(sqdir)/tex_templates/manuscript.tex
 
-cover_letter: sq-check-lettertemplate
-	@echo "Letter template '$(lettertemplate)'"
-	pandoc -o output/cover_letter.pdf $(PANDOC_FLAGS) \
-	--template $(lettertemplate) \
-	src/cover_letter.md
-
+bibsub:
+	mkdir -p bibgen
+	$(sqbin)/nobib `$(sqbin)/ver src/*$(manuscript_token)` | \
+	pandoc -o bibgen/$(manuscript_token).tex $(PANDOC_FLAGS) --biblatex
+	pdflatex --output-directory=bibgen bibgen/$(manuscript_token).tex
+	jabref -n -a bibgen/$(manuscript_token).aux,bibgen/`hostname`.bib ${BIBTEXDB}
+	cat bibgen/*.bib > output/refs.bib
 
 
 endif

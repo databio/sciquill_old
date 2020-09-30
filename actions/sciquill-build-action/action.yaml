@@ -15,6 +15,10 @@ inputs:
     description: "What files will this action produce that should be tracked in git?"
     required: false
     default: "build/*"
+  bibtexdb:
+    description: "Path to bibtex database."
+    required: false
+    default: null
 runs:
   using: 'composite'
   steps:
@@ -34,6 +38,7 @@ runs:
         echo $TEXINPUTS
         export SQDIR=`pwd`/${{ inputs.sqsubdir }}
         ls -l $SQDIR
+        export BIBTEXDB=`pwd`/${{ inputs.bibtexdb }}
         /home/runner/.local/bin/bulker run -c ${{ inputs.sqsubdir }}/bulker/bulker_config.yaml databio/sciquill ${{ inputs.command }}
       shell: bash 
       name: Run command with bulker

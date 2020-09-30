@@ -25,7 +25,7 @@ jobs:
       uses: ./sciquill/actions/sciquill-build-action
       with:
         command: make
-        outputs: output/manuscript.pdf fig/*
+        outputs: output/manuscript.pdf output/refs.bib fig/*
         bibtexdb: output/refs.bib
     - name: Push changes
       uses: ad-m/github-push-action@master
