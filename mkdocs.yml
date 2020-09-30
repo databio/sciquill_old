@@ -1,0 +1,21 @@
+site_name: Sciquill
+# site_logo: img/logo_caravel_dark.svg
+site_url: http://sciquill.databio.org
+repo_url: http://github.com/databio/sciquill
+theme: databio
+# paper_link: https://doi.org/10.1101/698704
+
+nav:
+  - Introduction:
+    - Overview: README.md
+  - Demos:
+    - Manuscript: manuscript.md
+    - Simple grant: simple_grant.md
+    - NIH R01: nih_ro1.md
+  - Reference:
+    - Changelog: changelog.md
+    
+plugins:
+  - databio
+  - search
+
