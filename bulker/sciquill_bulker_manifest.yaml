@@ -29,7 +29,7 @@ manifest:
   - command: mkdocs
     docker_image: nsheff/mkdocs
   - command: pandoc
-    docker_image: databio/sciquill
+    docker_image: docker.pkg.github.com/databio/sciquill/sciquill:0.0.1
     docker_args: "-i"
     docker_command: " "
   - command: gs
