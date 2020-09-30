@@ -12,6 +12,7 @@ nav:
     - Manuscript: manuscript.md
     - Simple grant: simple_grant.md
     - NIH R01: nih_ro1.md
+    - Auto-build with github actions: github-actions.md
   - Reference:
     - Changelog: changelog.md
     

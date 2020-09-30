@@ -1,12 +1,5 @@
 # Sciquill
 
-This repository helps you write your academic grant, paper, biosketch, or CV in
-`markdown`. It provides templates, style files, and helper scripts that
-are useful for building PDFs from `markdown`. This
- bring us closer to the goal of authoring scientific documents in
-markdown to completely [separate content from
-style](http://databio.org/posts/markdown_style.html).
-
 ## Examples of input/output
 
 The [examples](/examples) folder demonstrates what you can produce with mediabuilder. For each example there is a basic `Makefile`, which provides examples of recipes for building different media types. For example, this will render the example manuscript:
@@ -44,12 +37,12 @@ Or you can do it the hard way:
 
 
 2. Clone and configure `mediabuilder`:
-	* Clone [nsheff/mediabuilder](http://github.com/nsheff/mediabuilder) (this repository, cloned with `--recursive` to get the [nsheff/pandoc-wrapfig](http://github.com/nsheff/pandoc-wrapfig) submodule)
-	* Configure `mediabuilder`. The examples use an environment variable `$CODEBASE`, to where you will store this repo:
+	* Clone [databio/sciquill](http://github.com/databio/sciquill)
+	* Configure `mediabuilder`. The examples use an environment variable `$CODE`, to where you will store this repo:
 
 	```
-	export CODEBASE=`pwd`/
-	git clone git@github.com:nsheff/mediabuilder.git --recursive
+	export CODE=`pwd`/
+	git clone git@github.com:databio/sciquill.git
 	```
 
 	The latex templates in `tex_templates` rely on some relative includes. To use these you'll need to add the path to that folder to your `TEXINPUTS` environment variable. Adding something like this in your `.bashrc` will accomplish this permanently:

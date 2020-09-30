@@ -5,7 +5,7 @@ manifest:
   - bulker/alpinebase:default
   commands:
   - command: latex
-    docker_image: nsheff/pandoc
+    docker_image: docker.pkg.github.com/databio/sciquill/sciquill:0.0.1
   - command: git
     docker_image: nsheff/git
   - command: bibtool
@@ -35,4 +35,4 @@ manifest:
   - command: gs
     docker_image: minidocks/ghostscript
   - command: pdflatex
-    docker_image: nsheff/pandoc
+    docker_image: docker.pkg.github.com/databio/sciquill/sciquill:0.0.1
