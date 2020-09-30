@@ -1,29 +1,30 @@
-ifndef mbdir
-  $(error You must define the mbdir variable before including mediabuilder.make)
+ifndef sqdir
+  $(error You must define the sqdir variable before including mediabuilder.make)
 endif
+
+sqver = 0.0.1
 
 SHELL := /bin/bash
 today=`date +%y%m%d`
 
 # Variable for directory where bin utilities are stored
-mbin=$(mbdir)/bin
+sqbin=$(sqdir)/bin
 
 # Default CSL styles for citations, with or without bibliographies
-csl_nobib = $(mbdir)/csl/bioinformatics-nobib.csl
-#csl = $(mbdir)/csl/biomed-central.csl
-#csl = $(mbdir)/csl/bioinformatics.csl
-#csl = $(mbdir)/csl/compact.csl
-csl = $(mbdir)/csl/nature.csl
+csl_nobib = $(sqdir)/csl/bioinformatics-nobib.csl
+#csl = $(sqdir)/csl/biomed-central.csl
+#csl = $(sqdir)/csl/bioinformatics.csl
+#csl = $(sqdir)/csl/compact.csl
+csl = $(sqdir)/csl/nature.csl
 
-# Directory with pandoc-wrapfig
-wrapfig = $(mbdir)/pandoc-wrapfig/pandoc-wrapfig.py
-wrapfig_lua = $(mbdir)/pandoc_filters/wrapfig/wrapfig.lua
+# Sciquill pandoc filters
+figczar = $(sqdir)/pandoc_filters/figczar/figczar.lua
 
 # These are the typical flags we want to pass to pandoc
-# 08/2020 removed wrapfig to use pipe version
 define PANDOC_FLAGS
 --template $(textemplate) \
 --bibliography $(bib) \
+--lua-filter $(figczar) \
 --csl $(csl)
 endef
 
@@ -34,153 +35,189 @@ else
 bib = ${BIBTEXDB}
 endif
 
-test_texinputs:
-	@echo ${TEXINPUTS}
+.DEFAULT_GOAL := default
 
+# sq settings
+sq:
+	@echo "Sciquill version: " $(sqver)
+	@echo "TEXINPUTS: " ${TEXINPUTS}
+	@echo "SQDIR: " ${SQDIR}
+	@echo "sqtype: " $(sqtype)
 
-mbtest:
-	@echo "mediabuilder makefile successfully imported."
+# These targest confirm that a variable is set, and points to a file that exists.
 
+define check-sq-variable
+	@test -n "$(2)" || { echo "$(1) variable not set!"; exit 1; }
+	@test -s $(2) || { echo "$(1) file does not exist: $(2)"; exit 1; }
+endef
+
+sq-check-bib:
+	$(call check-sq-variable,bib,$(bib))
+
+sq-check-csl:
+	$(call check-sq-variable,textemplate,$(csl))
+
+sq-check-figczar:
+	$(call check-sq-variable,textemplate,$(figczar))
+
+sq-check-lettertemplate:
+	$(call check-sq-variable,lettertemplate,$(lettertemplate))
+
+sq-check-textemplate:
+	$(call check-sq-variable,textemplate,$(textemplate))
+
+sq-check-all: sq-check-bib sq-check-csl sq-check-figczar sq-check-lettertemplate sq-check-textemplate
+sq-check-core: sq-check-bib sq-check-csl sq-check-figczar sq-check-textemplate
 
 # Auto-build svg figures that have changed since last render
 figs:
 	@echo "Converting changed SVG files to PDF..."
-	$(mbin)/build-pdfs fig
+	$(sqbin)/build-pdfs fig
 
 figs_png:
 	@echo "Converting changed SVG files to PNG..."
-	$(mbin)/buildfigs fig/*.svg
+	$(sqbin)/buildfigs fig/*.svg
 
 
 # Media type: biosketch ------------------------------------------------------------
 
-ifeq ($(mbtype),biosketch)
+ifeq ($(sqtype),biosketch)
 
-textemplate = $(mbdir)/tex_templates/nih_bs.tex
+textemplate = $(sqdir)/tex_templates/nih_bs.tex
 
 endif
 
 # Media type: outline ------------------------------------------------------------
 
-ifeq ($(mbtype),outline)
+ifeq ($(sqtype),outline)
 
-textemplate = $(mbdir)/tex_templates/outline.tex
+textemplate = $(sqdir)/tex_templates/outline.tex
 
 endif
 
 
 # Media type: grant ------------------------------------------------------------
 
-ifeq ($(mbtype),grant_simple)
+ifeq ($(sqtype),grant_simple)
 
-textemplate = $(mbdir)/tex_templates/nih.tex
-docxtemplate = $(mbdir)/docx_templates/NIH_grant_style.docx
+textemplate = $(sqdir)/tex_templates/nih.tex
+docxtemplate = $(sqdir)/docx_templates/NIH_grant_style.docx
+
+default: research_plan refs
 
 research_plan: figs
-	$(mbin)/nobib `$(mbin)/ver src/research_plan` | \
+	$(sqbin)/nobib `$(sqbin)/ver src/research_plan` | \
 	pandoc -o output/research_plan.pdf $(PANDOC_FLAGS) 
 
+refs:
+	pandoc --strip-comments -t markdown `$(sqbin)/ver src/research_plan` | \
+	$(sqbin)/getrefs | \
+	pandoc -o output/references.pdf $(PANDOC_FLAGS)
+
+research_plan_refs: figs
+	$(sqbin)/addrefsec `$(sqbin)/ver src/research_plan` | \
+	pandoc -o output/research_plan_refs.pdf $(PANDOC_FLAGS) 
 
 endif
 
-ifeq ($(mbtype),grant_nsf)
+ifeq ($(sqtype),grant_nsf)
 
-textemplate = $(mbdir)/tex_templates/nsf.tex
+textemplate = $(sqdir)/tex_templates/nsf.tex
 
 endif
 
 
-ifeq ($(mbtype),grant)
+ifeq ($(sqtype),grant)
 
-textemplate = $(mbdir)/tex_templates/nih.tex
-docxtemplate = $(mbdir)/docx_templates/NIH_grant_style.docx
+textemplate = $(sqdir)/tex_templates/nih.tex
+docxtemplate = $(sqdir)/docx_templates/NIH_grant_style.docx
 
 # Recipe to run to make sure everything is up-to-date before submission
 all: figs abstract aims research_plan split_research_plan refs merge
 
 abstract:
-	$(mbin)/nobib `$(mbin)/ver src/abstract` | \
+	$(sqbin)/nobib `$(sqbin)/ver src/abstract` | \
 	pandoc -o output/abstract.pdf $(PANDOC_FLAGS)
 
 # Produce just the introduction
 intro: 
-	$(mbin)/nobib `$(mbin)/ver src/introduction` | \
+	$(sqbin)/nobib `$(sqbin)/ver src/introduction` | \
 	pandoc -o output/introduction.pdf $(PANDOC_FLAGS)
 
 # Produce just the introduction + aims
 intro_aims: figs
-	$(mbin)/addrefsec `$(mbin)/ver src/introduction src/specific_aims` | \
+	$(sqbin)/addrefsec `$(sqbin)/ver src/introduction src/specific_aims` | \
 	pandoc -o output/intro_aims.pdf $(PANDOC_FLAGS)
 
 # Render just aim 1
 aim1: figs
-	$(mbin)/addrefsec `$(mbin)/ver src/aim1` | \
+	$(sqbin)/addrefsec `$(sqbin)/ver src/aim1` | \
 	pandoc -o output/aim1.pdf $(PANDOC_FLAGS)
 
 # Produces just the specific aims.
 aims: figs
-	$(mbin)/nobib `$(mbin)/ver src/specific_aims` | \
+	$(sqbin)/nobib `$(sqbin)/ver src/specific_aims` | \
 	pandoc -o output/specific_aims.pdf $(PANDOC_FLAGS)
 
 aims_docx: figs_png
-	$(mbin)/nobib `$(mbin)/ver src/specific_aims` | sed 's/\.pdf/\.png/' | \
+	$(sqbin)/nobib `$(sqbin)/ver src/specific_aims` | sed 's/\.pdf/\.png/' | \
 	pandoc -o output/specific_aims.docx $(PANDOC_FLAGS) \
 	--reference-doc $(docxtemplate) 
 
 # Produces the specific aims with significance, innovation, and refs
 aims_sig_inno: figs
-	$(mbin)/addrefsec `$(mbin)/ver src/specific_aims src/significance_innovation` | \
+	$(sqbin)/addrefsec `$(sqbin)/ver src/specific_aims src/significance_innovation` | \
 	pandoc -o output/aims_significance_innovation.pdf $(PANDOC_FLAGS)
 
 # Render the entire research plan (including aims, significance, innovation, and
 # approach). These must be rendered together so citations are numbered across
 # the whole document (dividing them throws the citation numbering off)
 research_plan: figs
-	$(mbin)/nobib `$(mbin)/ver src/specific_aims` \
-	`$(mbin)/ver src/significance_innovation` \
-	`$(mbin)/ver src/aim1` `$(mbin)/ver src/aim2` `$(mbin)/ver src/aim3` | \
+	$(sqbin)/nobib `$(sqbin)/ver src/specific_aims` \
+	`$(sqbin)/ver src/significance_innovation` \
+	`$(sqbin)/ver src/aim1` `$(sqbin)/ver src/aim2` `$(sqbin)/ver src/aim3` | \
 	pandoc -o output/aims_research_plan.pdf $(PANDOC_FLAGS) 
 
 # Split out the specific aims off the rest of the research plan document. Some
-# grants require them to be divided; we must produce them combined and then
+# grants require them to be divided; we must produce them cosqbined and then
 # split them post-hoc so that citations are numbered correctly
 split_research_plan:
-	$(mbin)/poppdf output/aims_research_plan.pdf output/research_plan.pdf
+	$(sqbin)/poppdf output/aims_research_plan.pdf output/research_plan.pdf
 	
 
 # Render complete plan, including intro
 research_plan_intro: figs
-	$(mbin)/addrefsec `$(mbin)/ver src/introduction src/specific_aims` \
-	`$(mbin)/ver src/significance_innovation` \
-	`$(mbin)/ver src/aim1` `$(mbin)/ver src/aim2` `$(mbin)/ver src/aim3` | \
+	$(sqbin)/addrefsec `$(sqbin)/ver src/introduction src/specific_aims` \
+	`$(sqbin)/ver src/significance_innovation` \
+	`$(sqbin)/ver src/aim1` `$(sqbin)/ver src/aim2` `$(sqbin)/ver src/aim3` | \
 	pandoc -o output/intro_research_plan.pdf $(PANDOC_FLAGS)
 
 approach_refs: figs approach refs
-	$(mbin)/mergepdf output/aims_approach_refs.pdf \
+	$(sqbin)/mergepdf output/aims_approach_refs.pdf \
 	output/aims_approach.pdf \
 	output/references.pdf
 
 # Requires pandoc 2 with --strip-comments implemented
 refs:
-	pandoc --strip-comments -t markdown `$(mbin)/ver src/specific_aims` \
-	`$(mbin)/ver src/significance_innovation` \
-	`$(mbin)/ver src/aim1` `$(mbin)/ver src/aim2` `$(mbin)/ver src/aim3` | \
-	$(mbin)/getrefs | \
+	pandoc --strip-comments -t markdown `$(sqbin)/ver src/specific_aims` \
+	`$(sqbin)/ver src/significance_innovation` \
+	`$(sqbin)/ver src/aim1` `$(sqbin)/ver src/aim2` `$(sqbin)/ver src/aim3` | \
+	$(sqbin)/getrefs | \
 	pandoc -o output/references.pdf $(PANDOC_FLAGS)
 
 
-# Merge in the references PDF to the end of the combined research_plan
+# Merge in the references PDF to the end of the cosqbined research_plan
 research_plan_refs: figs research_plan refs
-	$(mbin)/mergepdf output/research_plan_refs.pdf \
+	$(sqbin)/mergepdf output/research_plan_refs.pdf \
 	output/aims_research_plan.pdf \
 	output/references.pdf
 
 # Produce a subset bibliography for the project
 bibsub:
 	mkdir -p bibgen
-	$(mbin)/nobib `$(mbin)/ver src/specific_aims` \
-	`$(mbin)/ver src/significance_innovation` \
-	`$(mbin)/ver src/aim1` `$(mbin)/ver src/aim2` `$(mbin)/ver src/aim3` | \
+	$(sqbin)/nobib `$(sqbin)/ver src/specific_aims` \
+	`$(sqbin)/ver src/significance_innovation` \
+	`$(sqbin)/ver src/aim1` `$(sqbin)/ver src/aim2` `$(sqbin)/ver src/aim3` | \
 	pandoc -o bibgen/research_plan.tex $(PANDOC_FLAGS) --biblatex
 	pdflatex --output-directory=bibgen bibgen/research_plan.tex
 	jabref -n -a bibgen/research_plan.aux,bibgen/`hostname`.bib ${BIBTEXDB}
@@ -217,7 +254,7 @@ personnel_justification:
 endif
 
 
-ifeq ($(mbtype),sqmanuscript)
+ifeq ($(sqtype),sqmanuscript)
 
 #
 ifndef cover_token
@@ -231,28 +268,35 @@ endif
 ifndef supplement_token
   supplement_token = supplement
 endif
-manuscript: figs manuscript_nofig
+
+default: manuscript
+	@echo Default
+
+manuscript: sq-check-core figs manuscript_nofig
 
 manuscript_nofig:
-	cat `$(mbin)/ver src/*$(manuscript_token)` | \
-	pandoc \
-	--lua-filter $(wrapfig_lua) \
-	--template $(textemplate) \
-	--bibliography $(bib) \
-	--csl $(csl) \
+	cat `$(sqbin)/ver src/*$(manuscript_token)` | \
+	pandoc $(PANDOC_FLAGS) \
 	-o output/$(manuscript_token).pdf
 
-cover_manu:
-	$(mbin)/mergepdf output/$(cover_token)_$(manuscript_token)_$(supplement_token).pdf \
+cover_manu: cover_letter
+	$(sqbin)/mergepdf output/$(cover_token)_$(manuscript_token)_$(supplement_token).pdf \
 	output/$(cover_token).pdf \
 	output/$(manuscript_token).pdf
+
+cover_letter: sq-check-lettertemplate
+	@echo "Letter template '$(lettertemplate)'"
+	pandoc -o output/cover_letter.pdf $(PANDOC_FLAGS) \
+	--template $(lettertemplate) \
+	src/cover_letter.md
+
 
 
 endif
 
 # Media type: manuscript -------------------------------------------------------
 
-ifeq ($(mbtype),manuscript)
+ifeq ($(sqtype),manuscript)
 
 # Set the default manuscript_token, which is the string used to know which
 # file to build
@@ -264,43 +308,43 @@ ifndef supplement_token
   supplement_token = supplement
 endif
 
-textemplate = $(mbdir)/tex_templates/manuscript.tex
+textemplate = $(sqdir)/tex_templates/manuscript.tex
 
 manuscript: figs manuscript_nofig
 
 manuscript_nofig:
-	$(mbin)/passthru `$(mbin)/ver src/*$(manuscript_token)` | \
+	$(sqbin)/passthru `$(sqbin)/ver src/*$(manuscript_token)` | \
 	pandoc -t json | $(wrapfig) | pandoc -f json \
 	-o output/$(manuscript_token).pdf $(PANDOC_FLAGS)
 
 manuscript_supplement: figs
-	$(mbin)/passthru `$(mbin)/ver src/*$(manuscript_token)` \
-	`$(mbin)/ver src/*$(supplement_token)`| \
+	$(sqbin)/passthru `$(sqbin)/ver src/*$(manuscript_token)` \
+	`$(sqbin)/ver src/*$(supplement_token)`| \
 	pandoc \
 	-o output/$(manuscript_token)_$(supplement_token).pdf $(PANDOC_FLAGS)
 
 deprecated_paste: figs manuscript supplement
-	$(mbin)/mergepdf output/$(manuscript_token)_$(supplement_token).pdf \
+	$(sqbin)/mergepdf output/$(manuscript_token)_$(supplement_token).pdf \
 	output/$(manuscript_token).pdf \
 	output/$(supplement_token).pdf
 
 
 # Produce a docx version of the paper, which can be necessary for feedback
 manuscript_docx:
-	$(mbin)/buildfigs fig/*.svg
-	cat `$(mbin)/ver src/*$(manuscript_token)` | sed 's/\.pdf/\.png/' | pandoc \
+	$(sqbin)/buildfigs fig/*.svg
+	cat `$(sqbin)/ver src/*$(manuscript_token)` | sed 's/\.pdf/\.png/' | pandoc \
 	-o output/manuscript.docx $(PANDOC_FLAGS)
 
 manuscript_tex:
-	$(mbin)/buildfigs fig/*.svg
-	cat `$(mbin)/ver src/*$(manuscript_token)` | pandoc \
+	$(sqbin)/buildfigs fig/*.svg
+	cat `$(sqbin)/ver src/*$(manuscript_token)` | pandoc \
 	-o output/manuscript.tex $(PANDOC_FLAGS) --biblatex
 
 manuscript_aux:	
 	~/code/docker/bin/pdflatex --output-directory=output output/manuscript.tex
 
 manuscript_txt:	
-	cat `$(mbin)/ver src/*$(manuscript_token)` | sed 's/\.pdf/\.png/' | pandoc \
+	cat `$(sqbin)/ver src/*$(manuscript_token)` | sed 's/\.pdf/\.png/' | pandoc \
 	-o output/manuscript.txt --to=plain
 
 
@@ -308,7 +352,7 @@ manuscript_txt:
 
 bibsub:
 	mkdir -p bibgen
-	$(mbin)/nobib `$(mbin)/ver src/*manuscript` | \
+	$(sqbin)/nobib `$(sqbin)/ver src/*manuscript` | \
 	pandoc -o bibgen/manuscript.tex $(PANDOC_FLAGS) --biblatex
 	pdflatex --output-directory=bibgen bibgen/manuscript.tex
 	jabref -n -a bibgen/manuscript.aux,output/refs_`hostname`.bib ${BIBTEXDB}
@@ -344,14 +388,14 @@ clt:
 	letter.md
 
 supplement: figs
-	$(mbin)/addrefsec `$(mbin)/ver src/*suppl` | \
+	$(sqbin)/addrefsec `$(sqbin)/ver src/*suppl` | \
 	pandoc \
 	-o output/supplement.pdf $(PANDOC_FLAGS)
 
 response:
-	$(mbin)/nobib `$(mbin)/ver src/response_to_reviewers` | \
+	$(sqbin)/nobib `$(sqbin)/ver src/response_to_reviewers` | \
 	pandoc -o output/response_to_reviewers.pdf $(PANDOC_FLAGS) \
-	--template $(mbdir)/tex_templates/manuscript.tex
+	--template $(sqdir)/tex_templates/manuscript.tex
 
 	
 endif
