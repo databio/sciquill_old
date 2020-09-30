@@ -1,4 +1,6 @@
 # action.yml
+# deprecated by the new sciquill build action
+
 name: "Build PDF"
 description: "Builds PDF from input markdown"
 inputs:

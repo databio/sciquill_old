@@ -1,6 +1,6 @@
 # action.yml
-name: "Load a bulker manifest"
-description: "Bulker, yay."
+name: "Bulker load"
+description: "Load a bulker manifest."
 inputs:
   manifest:
     description: "Bulker manifest to load"

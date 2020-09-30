@@ -1,6 +1,6 @@
 # action.yml
 name: "Install bulker"
-description: "Bulker, yay."
+description: "Installs bulker software"
 runs:
   using: 'composite'
   steps:

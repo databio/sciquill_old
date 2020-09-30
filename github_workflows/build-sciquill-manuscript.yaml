@@ -24,7 +24,7 @@ jobs:
     - name: Build sciquill PDF
       uses: ./sciquill/actions/sciquill-build-action
       with:
-        command: make manuscript
+        command: make
         outputs: output/manuscript.pdf fig/*
         bibtexdb: output/refs.bib
     - name: Push changes
