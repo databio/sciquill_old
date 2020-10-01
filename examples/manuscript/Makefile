@@ -1,5 +1,4 @@
-###############################################################################
-# Sciquill configuration 
+# Sciquill configuration ------------------------------------------------------
 # sqdir - points to your sciquill repository
 # sqtype - sciquill media type: 'manuscript', 'cv', or 'grant'
 # then, include sciquill.make for default recipes and variables
@@ -15,18 +14,6 @@ include $(sqdir)/sciquill.make
 #csl = ${CODEBASE}mediabuilder/csl/nature.csl
 textemplate = $(sqdir)/tex_templates/manuscript.tex
 lettertemplate="$(sqdir)/tex_templates/manuscript.tex"
-
-# cover_letter:
-# 	pandoc --preserve-tabs \
-# 	--reference-doc $(docxtemplate) \
-# 	-o output/cover_letter.docx \
-# 	src/cover_letter.md
-# 	libre --convert-to pdf output/cover_letter.docx \
-# 	--outdir output
-# 	pandoc -o output/cover_letter.txt \
-# 	-t plain \
-# 	--wrap=none \
-# 	src/cover_letter.md
 
 cover_letter_manuscript:
 	$(sqbin)/mergepdf output/merged.pdf \

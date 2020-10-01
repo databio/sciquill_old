@@ -9,12 +9,6 @@ on:
     inputs: null
 
 jobs:
-  getready:
-    runs-on: ubuntu-latest
-    name: Get Ready!
-    steps:
-      - name: grab
-        run: docker pull databio/sciquill
   update:
     runs-on: ubuntu-latest
     name: Build PDF

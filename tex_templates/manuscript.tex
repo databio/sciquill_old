@@ -139,7 +139,9 @@ $endif$
 %\usepackage{sectsty}% http://ctan.org/pkg/sectsty
 \usepackage{xcolor}% http://ctan.org/pkg/xcolor
 % \sectionfont{\color{bluehaze}\normalfont\fontsize{12}{3}\selectfont}
+$if(linespread)$\linespread{$linespread$}$else$
 \linespread{1.0}
+$endif$
 
 % Here I am using the needspace thing to make sure that the title headings don't
 % show up on the very last line of a page.

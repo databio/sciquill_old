@@ -38,17 +38,17 @@ Or you can do it the hard way:
 
 2. Clone and configure `mediabuilder`:
 	* Clone [databio/sciquill](http://github.com/databio/sciquill)
-	* Configure `mediabuilder`. The examples use an environment variable `$CODE`, to where you will store this repo:
+	* Configure `mediabuilder`. The examples use an environment variable `$CODE`, in which you will store this repo:
 
 	```
-	export CODE=`pwd`/
+	export CODE=`pwd`
 	git clone git@github.com:databio/sciquill.git
 	```
 
 	The latex templates in `tex_templates` rely on some relative includes. To use these you'll need to add the path to that folder to your `TEXINPUTS` environment variable. Adding something like this in your `.bashrc` will accomplish this permanently:
 
 	```
-	export TEXINPUTS="${TEXINPUTS}${CODEBASE}mediabuilder/tex_templates/:"
+	export TEXINPUTS="${TEXINPUTS}${CODE}/sciquill/tex_templates/:"
 	```
 
 	If using bulker, you will also need to make sure this variable is passed on to your bulker tools. So, add it to the list of `envvars` in your bulker config file.

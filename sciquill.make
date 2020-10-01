@@ -268,8 +268,7 @@ ifndef response_token
   response_token = response
 endif
 
-default: manuscript
-	@echo Default
+.DEFAULT_GOAL := manuscript
 
 cover_letter: sq-check-lettertemplate
 	@echo "Letter template '$(lettertemplate)'"
