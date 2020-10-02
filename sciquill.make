@@ -298,7 +298,7 @@ bibsub:
 	$(sqbin)/nobib `$(sqbin)/ver src/*$(manuscript_token)` | \
 	pandoc -o bibgen/$(manuscript_token).tex $(PANDOC_FLAGS) --biblatex
 	pdflatex --output-directory=bibgen bibgen/$(manuscript_token).tex
-	jabref -n -a bibgen/$(manuscript_token).aux,bibgen/`hostname`.bib ${BIBTEXDB}
+	jabref -n -a bibgen/$(manuscript_token).aux,bibgen/`hostname`.bib $(bib)
 	cat bibgen/*.bib > output/refs.bib
 
 
