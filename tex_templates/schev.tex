@@ -16,6 +16,9 @@
 \RequirePackage[top=1in,left=1in,right=1in,bottom=1in]{geometry}
 
 
+\usepackage{ctable}
+\usepackage{float} % provides the H option for float placement
+
 \usepackage{pdfpages}
 \usepackage{fancyhdr}
 
@@ -33,6 +36,13 @@
 \definecolor{maroonhaze}{RGB}{148,54,52}
 \definecolor{orangehaze}{RGB}{227,108,10}
 \definecolor{black}{RGB}{0,0,0}
+
+% Attempt to smash lists together
+\usepackage{enumerate}
+\usepackage{enumitem}
+\setlist[itemize]{topsep=-4pt,parsep=-2pt,itemindent=0pt,leftmargin=18pt}
+
+\def\labelitemi{\raisebox{0.5ex}{\tiny\textbullet}}
 
 
 \ifxetex
