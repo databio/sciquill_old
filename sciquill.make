@@ -29,11 +29,13 @@ define PANDOC_FLAGS
 endef
 
 # Use a local bibtex database if it exists; otherwise try a general one
+bibdir=${bibdir}
 ifneq ("$(wildcard output/refs.bib)","")
 bib = output/refs.bib
 else
 bib = ${BIBTEXDB}
 endif
+
 
 .DEFAULT_GOAL := default
 
@@ -48,6 +50,10 @@ sq:
 	@echo "figczar: " $(figczar)
 	@echo "lettertemplate: " $(lettertemplate)
 	@echo "textemplate: " $(textemplate)
+	@echo "supplement_token: " $(supplement_token)
+	@echo "manuscript_token: " $(manuscript_token)
+tokens:
+
 
 
 # These target confirm that a variable is set, and points to a file that exists.
@@ -184,6 +190,14 @@ research_plan: figs
 	`$(sqbin)/ver src/aim1` `$(sqbin)/ver src/aim2` `$(sqbin)/ver src/aim3` | \
 	pandoc -o output/aims_research_plan.pdf $(PANDOC_FLAGS) 
 
+research_plan_nofigs:
+	$(sqbin)/nobib `$(sqbin)/ver src/specific_aims` \
+	`$(sqbin)/ver src/significance_innovation` \
+	`$(sqbin)/ver src/aim1` `$(sqbin)/ver src/aim2` `$(sqbin)/ver src/aim3` | \
+	pandoc -o output/aims_research_plan.pdf $(PANDOC_FLAGS) 
+
+
+
 # Split out the specific aims off the rest of the research plan document. Some
 # grants require them to be divided; we must produce them cosqbined and then
 # split them post-hoc so that citations are numbered correctly
@@ -296,11 +310,27 @@ response:
 bibsub:
 	mkdir -p bibgen
 	$(sqbin)/nobib `$(sqbin)/ver src/*$(manuscript_token)` | \
-	pandoc -o bibgen/$(manuscript_token).tex $(PANDOC_FLAGS) --biblatex
+	pandoc -o bibgen/$(manuscript_token).tex --csl $(csl) --template $(textemplate)  --biblatex
 	pdflatex --output-directory=bibgen bibgen/$(manuscript_token).tex
-	jabref -n -a bibgen/$(manuscript_token).aux,bibgen/`hostname`.bib $(bib)
+	jabref -n -a bibgen/$(manuscript_token).aux,bibgen/`hostname`.bib ${BIBTEXDB}
 	cat bibgen/*.bib > output/refs.bib
 
+manuscript_supplement:
+	cat `$(sqbin)/ver src/*$(manuscript_token)` \
+	`$(sqbin)/ver src/*$(supplement_token)`| \
+	pandoc $(PANDOC_FLAGS) \
+	-o output/$(manuscript_token)_$(supplement_token).pdf
+
+manuscript_supplement_tex:
+	cat `$(sqbin)/ver src/*$(manuscript_token)` \
+	`$(sqbin)/ver src/*$(supplement_token)`| \
+	pandoc $(PANDOC_FLAGS) \
+	-o output/$(manuscript_token)_$(supplement_token).tex
+
+supplement:
+	cat `$(sqbin)/ver src/*$(supplement_token)`| \
+	pandoc $(PANDOC_FLAGS) \
+	-o output/$(supplement_token).pdf
 
 endif
 

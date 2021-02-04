@@ -34,14 +34,14 @@ Cite papers using brackets and `bibtex` keys. Example citation:
 
 # Figures
 
-![\label{abstract}Fig. \ref{abstract}: Example full-width figure](fig/example_figure.pdf) 
+![\label{abstract}Fig. \ref{abstract}: Example full-width figure](fig/pdf/example_figure.pdf) 
 
 Refer to a figure using figure labels, so they are numbered automatically, like
 this: `\ref{abstract}` (See Fig. \ref{abstract}).  Wrap a figure using the
 `pandoc-wrapfig` extension by adding '{0}' to the end of the caption (Fig.
 \ref{wrapped}).
 
-![\label{wrapped}Fig. \ref{wrapped}: Example wrapped figure](fig/example_figure.pdf){wrap=44mm}
+![\label{wrapped}Fig. \ref{wrapped}: Example wrapped figure](fig/pdf/example_figure.pdf){wrap=44mm}
 
 Duis in tempor mauris, a lobortis nisl. Integer arcu lorem, vehicula sed ante
 commodo, maximus eleifend nisi. Aenean efficitur molestie lorem, ac pharetra
@@ -52,7 +52,7 @@ Nullam vestibulum, lacus eget pretium pharetra, augue ligula consectetur diam,
 eget condimentum ipsum magna sed augue.
 
 
-![\label{fig3}Fig. \ref{fig3}: Example double-column figure](fig/example_figure.pdf){fullwidth=t}
+![\label{fig3}Fig. \ref{fig3}: Example double-column figure](fig/pdf/example_figure.pdf){fullwidth=t}
 
 
 Vivamus eu rhoncus neque.

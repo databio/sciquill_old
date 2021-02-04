@@ -2,9 +2,9 @@ name: Build Sciquill PDF
 # This workflow is triggered on changes to source, or on a manual dispatch.
 on:
   push:
-    # paths:
-    #   - src/*.md
-    #   - fig/*.svg
+    paths:
+      - src/*.md
+      - fig/*.svg
   workflow_dispatch:
     inputs: null
 

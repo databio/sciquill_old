@@ -397,7 +397,10 @@
 \long\def\subtitle#1{\gdef\@subtitle{#1}}
 \subtitle{Genome analysis}
 
-
+\long\def\author{\@ifnextchar[{\short@uthor}{\@uthor}}
+\def\short@uthor[#1]{\authormark{#1}\@@author}
+\def\@uthor#1{\authormark{#1}\@@author{#1}}
+\long\def\@@author#1{\gdef\@author{#1}}
 
 \def\vol#1{\global\def\@vol{#1}}
 \def\issue#1{\global\def\@issue{#1}}
@@ -455,6 +458,7 @@
   \global\let\history\relax
   \global\let\editor\relax
   \global\let\title\relax
+  \global\let\author\relax
   \global\let\date\relax
   \global\let\pubyear\relax
   \global\let\@copyrightline\@empty
@@ -508,7 +512,7 @@
     \fi
     {\helveticabold\fontsize{18}{23}\selectfont\raggedright \@title \par}%
     \vspace{8.8\p@}
-    {\helveticabold\boldmath\fontsize{12}{15}\selectfont\raggedright  \par}%
+    {\helveticabold\boldmath\fontsize{12}{15}\selectfont\raggedright \@author \par}%
         \vspace{9\p@}
     {\helveticacn\fontsize{9}{12}\selectfont\raggedright \@address \par}%
     \vspace{6\p@}
